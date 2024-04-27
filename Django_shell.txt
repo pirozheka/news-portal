@@ -1,0 +1,79 @@
+python manage.py shell
+
+Создать двух пользователей (с помощью метода User.objects.create_user('username'))
+from django.contrib.auth.models import User
+user1 = User.objects.create_user('Alex')
+user2 = User.objects.create_user('Viktor')
+
+Создать два объекта модели Author, связанные с пользователями.
+author_alex = Author.objects.create(author = user1)
+author_viktor = Author.objects.create(author = user2)
+
+Добавить 4 категории в модель Category.
+from news.models import Category
+cat_auto = Category.objects.create(category_name = "Авто")
+cat_space = Category.objects.create(category_name = "Космос")
+cat_nature = Category.objects.create(category_name = "Природа")
+cat_trip = Category.objects.create(category_name = "Путешествия")
+
+Добавить 2 статьи и 1 новость.
+from news.models import Post
+article1 = Post.objects.create(author = author_alex, post_type = 'AR', post_title = 'Экспресс-тест из Китая. Почему внедорожник Tank 700 ждут в России', post_text = 'Ниша больших полноприводных и дорогих внедорожников в России опустела с уходом из страны Toyota и Mercedes. Тем, кто отрицает китайские автобренды в этом сегменте, приходится раскошеливаться: привезти Mercedes-Benz G-Class по параллельному импорту обойдется в сумму от 20 млн руб., Toyota Fortuner — 8 млн руб., Toyota Land Cruiser Prado — 9 млн руб. Прописаться в этой компании решил концерн Great Wall со своим пока еще достаточно новым для России брендом Tank.')
+article2 = Post.objects.create(author = author_alex, post_type = 'AR', post_title = 'Седьмой континент. Какие миссии планируются после «Луны-25»?', post_text = 'Автоматическая станция «Луна-25» проложит дорогу следующим российским лунным миссиям. Как будет проходить эволюция космических аппаратов и решаемых задач, какие трудности и опасности ждут будущих колонизаторов Луны и, строго говоря, зачем вообще землянам нужно стремиться к покорению нашего каменистого спутника – об этом рассказывают ученые Института космических исследований и конструкторы НПО Лавочкина.')
+news1 = Post.objects.create(author = author_viktor, post_type = 'NP', post_title = 'Женщины разгромили офис турфирмы в Таиланде из-за отмены экскурсии', post_text = 'По данным источника, женщины купили тур по заливам в провинции Пханг-Нга, но в день поездки они либо сами пропустили трансфер, либо их никто не встретил. Возмущенные туристки пошли разбираться в агентство.')
+
+
+Присвоить им категории (как минимум в одной статье/новости должно быть не меньше 2 категорий).
+Post.objects.get(id=1).category_names.add(Category.objects.get(id=5))
+Post.objects.get(id=2).category_names.add(Category.objects.get(id=6))
+Post.objects.get(id=2).category_names.add(Category.objects.get(id=7))
+Post.objects.get(id=3).category_names.add(Category.objects.get(id=8))
+
+#Либо через связующий объект - так тоже работает :)
+PostCategory.objects.create(category=Category.objects.get(category_name="Авто"), post = Post.objects.get(id=1))
+PostCategory.objects.create(category=Category.objects.get(category_name="Космос"), post = Post.objects.get(id=2)) 
+PostCategory.objects.create(category=Category.objects.get(category_name="Природа"), post = Post.objects.get(id=2))
+PostCategory.objects.create(category=Category.objects.get(category_name="Путешествия"), post = Post.objects.get(id=3))
+
+Создать как минимум 4 комментария к разным объектам модели Post (в каждом объекте должен быть как минимум один комментарий).
+from news.models import Comment
+comm1 = Comment.objects.create(author=User.objects.create_user('New User'), related_post = Post.objects.get(id=1), comment_text = 'Очень нравится пост')
+comm2 = Comment.objects.create(author=User.objects.create_user('New User2'), related_post = Post.objects.get(id=1), comment_text = 'Интересная статья, спасибо!')
+comm3 = Comment.objects.create(author=User.objects.create_user('New User3'), related_post = Post.objects.get(id=2), comment_text = 'Думаю, в первую очередь необходимо осваивать Луну')
+comm4 = Comment.objects.create(author=User.objects.create_user('New User4'), related_post = Post.objects.get(id=3), comment_text = 'Боевые женщины xD')
+
+
+Применяя функции like() и dislike() к статьям/новостям и комментариям, скорректировать рейтинги этих объектов.
+comm1 = Comment.objects.create(author=User.objects.create_user('New User'), related_post = Post.objects.get(id=1), comment_text = 'Очень нравится пост')
+comm2 = Comment.objects.create(author=User.objects.create_user('New User2'), related_post = Post.objects.get(id=1), comment_text = 'Интересная статья, спасибо!')
+comm3 = Comment.objects.create(author=User.objects.create_user('New User3'), related_post = Post.objects.get(id=2), comment_text = 'Думаю, в первую очередь необходимо осваивать Луну')
+comm4 = Comment.objects.create(author=User.objects.create_user('New User4'), related_post = Post.objects.get(id=3), comment_text = 'Боевые женщины xD')
+comm1.like()
+comm2.like()
+comm3.dislike()
+post2 = Post.objects.get(id=1)
+post3 = Post.objects.get(id=2)
+post4 = Post.objects.get(id=3) 
+post2.like()
+post2.like()
+post3.dislike()
+post3.dislike()
+post4.like()
+
+
+Обновить рейтинги пользователей.
+author1 = Author.objects.get(id=1)
+author1.update_rating()
+author2 = Author.objects.get(id=2)
+author2.update_rating()
+
+Вывести username и рейтинг лучшего пользователя (применяя сортировку и возвращая поля первого объекта).
+Author.objects.all().order_by('-user_rating').values('author__username','user_rating').first()
+
+Вывести дату добавления, username автора, рейтинг, заголовок и превью лучшей статьи, основываясь на лайках/дислайках к этой статье.
+Post.objects.all().order_by('-post_rating').select_related('author__author').values('post_created', 'author__author__username', 'post_rating', 'post_title').first()
+
+Вывести все комментарии (дата, пользователь, рейтинг, текст) к этой статье.
+best_post_obj = Post.objects.all().order_by('-post_rating').values('id').first()
+id_max = best_post_obj.get('id')
+Comment.objects.filter(related_post_id=id_max).values('comment_text')
