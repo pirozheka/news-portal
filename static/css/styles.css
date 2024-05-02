@@ -1,0 +1,24 @@
+a {
+    text-decoration: none;
+    color: #F5F7F8;
+}
+
+nav {
+    color: #F5F7F8;
+    background-color: #495E57;
+}
+
+.brand-logo {
+    color: #F4CE14;
+    font-weight: 600;
+}
+
+.brand-logo:hover {
+    text-decoration: none;
+    color: #F4CE14;
+    cursor: pointer;
+}
+
+h1 {
+    color: #45474B;
+}

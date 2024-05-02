@@ -1,0 +1,11 @@
+{% extends './default.html' %} 
+ 
+{% block title %}
+Только самые последние новости
+{% endblock title %}
+ 
+<!-- В контенте на странице мы выводим все посты -->
+{% block content %}
+<h1>Новости</h1>
+{{ posts_list }}
+{% endblock content %}

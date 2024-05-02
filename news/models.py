@@ -27,6 +27,9 @@ class Author(models.Model):
 
 class Category(models.Model):
     category_name = models.CharField(max_length=65, unique=True)
+    
+    def __str__(self):
+        return self.category_name()
 
 class Post(models.Model):
     #Запретить удаление постов при удалении автора выглядит логичным, даже если корреспондент уволился, новость или статья остается
@@ -63,6 +66,9 @@ class Post(models.Model):
             return prew_text
         else:
             return self.post_text
+        
+    def __str__(self):
+        return f'{self.post_title}'
 
 #Модель для связи "Многие к многим"
 class PostCategory(models.Model):
