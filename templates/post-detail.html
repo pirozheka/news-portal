@@ -1,9 +1,11 @@
 {% extends './default.html' %}
 
 {% block title %}
-Новость
+    Новость
 {% endblock title %}
 
 {% block content %}
-<h1>{{ post }}</h1>
+    <h1>{{ post.post_title }}</h1>
+    <p>{{ time_now|date:'d.m.Y' }}</p>
+    <p class="container">{{ post.post_text }}</p>
 {% endblock content %}

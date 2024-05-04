@@ -6,6 +6,22 @@
  
 <!-- В контенте на странице мы выводим все посты -->
 {% block content %}
-<h1>Новости</h1>
-{{ posts_list }}
+    <h1>Новости</h1>
+    <hr>
+    {% if posts_list %}
+    <div class="container d-flex flex-column">
+        <p>Всего: {{ posts_list|length }}</p>
+        {% for post in posts_list %}
+        <div class="col-12">
+            <h3> {{ post.post_title }} </h3>
+            <p><b>{{ time_now|date:'d.m.Y' }}</b></p>
+            <p>{{ post.post_text|truncatewords:20 }}</p>
+            <p><a href="{% url 'post_detail' post.id %}" class="text-success">Подробнее</a></p>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+        <h2>Новостей нет!</h2>
+    {% endif %}    
+
 {% endblock content %}
