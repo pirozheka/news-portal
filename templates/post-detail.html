@@ -1,11 +1,13 @@
 {% extends './default.html' %}
 
+{% load custom_filter %}
+
 {% block title %}
     Новость
 {% endblock title %}
 
 {% block content %}
-    <h1>{{ post.post_title }}</h1>
+    <h1>{{ post.post_title|censor }}</h1>
     <p>{{ time_now|date:'d.m.Y' }}</p>
-    <p class="container">{{ post.post_text }}</p>
+    <p class="container">{{ post.post_text|censor }}</p>
 {% endblock content %}
