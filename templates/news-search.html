@@ -7,22 +7,14 @@
 <h1>Найти новость</h1>
 
 <form method="GET" action="{% url 'news_search' %}">
-    {{ filterset.form.non_field_errors }}
-
-    {{ filterset.form.name__icontains.errors }}
-    <input
-        id="{{ filterset.form.name__icontains.id }}"
-        name="{{ filterset.form.name__icontains.name }}"
-        value="{{ filterset.form.name__icontains.value }}"
-        class="form-control"
-    >
+    {{ filterset.form }}
     <input type="submit" class="mt-3 btn-primary" value="Найти" />
 </form>
 
 {% if posts_list %}
     <ul>
         {% for post in posts_list %}
-            <li>{{ post.post_title }}</li>
+            <li><a href="{% url 'post_detail' post.id %}" class="text-success">{{ post.post_title }} </a></li>
         {% endfor %}
     </ul>
 {% else %}
