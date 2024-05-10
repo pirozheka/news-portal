@@ -1,8 +1,11 @@
 from django.shortcuts import render
 from datetime import datetime
-# Create your views here.
-from django.views.generic import ListView, DetailView
+from django.views.generic import (
+    ListView, DetailView, CreateView, UpdateView, DeleteView
+)
 from .models import Post, Category, Author
+from .filters import NewsFilter
+from .forms import NewsSearchForm
 
 
 
@@ -17,6 +20,7 @@ class PostsList(ListView):
     # Это имя списка, в котором будут лежать все объекты.
     # Его надо указать, чтобы обратиться к списку объектов в html-шаблоне.
     context_object_name = 'posts_list'
+    paginate_by = 10
 
     # Метод get_context_data позволяет нам изменить набор данных,
     # который будет передан в шаблон.
@@ -32,6 +36,25 @@ class PostsList(ListView):
         # чтобы на её примере рассмотреть работу ещё одного фильтра.
         context['next_sale'] = None
         return context
+    
+class NewsSearch(ListView):
+    model = Post
+    ordering = '-post_created'
+    template_name = 'news-search.html'
+    context_object_name = 'posts_list'
+    paginate_by = 10
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.filterset = NewsFilter(self.request.GET, queryset)
+        return self.filterset.qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = NewsSearchForm(self.request.GET)
+        return context
+    
+
 
 class PostDetail(DetailView):
     model = Post

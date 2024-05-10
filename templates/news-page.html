@@ -16,6 +16,7 @@
             <h3> {{ post.post_title }} </h3>
             <p><b>{{ time_now|date:'d.m.Y' }}</b></p>
             <p>{{ post.post_text|truncatewords:20 }}</p>
+            
             <p><a href="{% url 'post_detail' post.id %}" class="text-success">Подробнее</a></p>
         </div>
         {% endfor %}
@@ -23,5 +24,24 @@
     {% else %}
         <h2>Новостей нет!</h2>
     {% endif %}    
+
+{# Добавляем пагинацию на страницу #}
+<div class="pagination-block">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1" class="text-success">← В начало </a>
+            <span>|</span><a href="?page={{ page_obj.previous_page_number }}" class="text-success"> {{ page_obj.previous_page_number }} </a><span>|</span>
+        {% endif %}
+
+        <span class="current">
+            Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+        <span>|</span><a href="?page={{ page_obj.next_page_number }}" class="text-success"> {{ page_obj.next_page_number }} </a><span>|</span>
+            <a href="?page={{ page_obj.paginator.num_pages }}" class="text-success"> Последняя → </a>
+        {% endif %}
+    </span>
+</div>
 
 {% endblock content %}

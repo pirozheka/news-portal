@@ -4,16 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FreshNews - первый новостной портал</title>
+    <title>
+    {% block title %}
+        Первый новостной портал
+    {% endblock title %} | Freshnews
+    </title>
+    
+    {% load static %}
     <!-- Подключение Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static '../static/css/styles.css' %}">
     <link type="image/x-icon" href="{% static 'assets/favicon.ico'%}" rel="shortcut icon">
 </head>
 
 <body>
-    <nav class="container-fluid nav-bg">
+    <nav class="container-fluid">
         <div class="container p-2 d-flex align-items-center">
             <a class='brand-logo col-3' href="/">FreshNews</a>
             <ul class="nav col-3 justify-content-between">

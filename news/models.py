@@ -24,12 +24,20 @@ class Author(models.Model):
         self.user_rating = posts_rate + comments_rate + post_comments_rate
         self.save()
 
+    class Meta:
+        verbose_name = 'Автор'
+        verbose_name_plural = 'Авторы'
+
 
 class Category(models.Model):
     category_name = models.CharField(max_length=65, unique=True)
     
     def __str__(self):
-        return self.category_name()
+        return self.category_name
+    
+    class Meta:
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
 
 class Post(models.Model):
     #Запретить удаление постов при удалении автора выглядит логичным, даже если корреспондент уволился, новость или статья остается
@@ -69,6 +77,10 @@ class Post(models.Model):
         
     def __str__(self):
         return f'{self.post_title}'
+    
+    class Meta:
+        verbose_name = 'Пост'
+        verbose_name_plural = 'Посты'
 
 #Модель для связи "Многие к многим"
 class PostCategory(models.Model):
