@@ -1,0 +1,14 @@
+{% extends './default.html' %} 
+{% block title %}
+Создание gjcnf
+{% endblock title %}
+
+{% block content %}
+<h1>Новый пост</h1>
+<hr>
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Создать" />
+</form>
+{% endblock content %}

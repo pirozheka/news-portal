@@ -1,8 +1,10 @@
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from datetime import datetime
 from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView
 )
+from django import forms
 from .models import Post, Category, Author
 from .filters import NewsFilter
 from .forms import NewsSearchForm
@@ -73,4 +75,42 @@ class PostDetail(DetailView):
         # чтобы на её примере рассмотреть работу ещё одного фильтра.
         context['next_sale'] = None
         return context
+    
+class PostCreateForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = [
+        'author', 'post_title', 'post_text'
+    ]
+
+
+class NewsCreate(CreateView):
+    form_class = PostCreateForm
+    model = Post
+    template_name = 'post_create_news.html'
+
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        post.post_type = 'NP'
+        return super().form_valid(form)
+    
+class ArticlesCreate(CreateView):
+    form_class = PostCreateForm
+    model = Post
+    template_name = 'post_create_news.html'
+
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        post.post_type = 'AR'
+        return super().form_valid(form)
+
+class PostEdit(UpdateView):
+    form_class = PostCreateForm
+    model = Post
+    template_name = 'post_edit.html'
+
+class PostDelete(DeleteView):
+    model = Post
+    template_name = 'post_delete.html'
+    success_url = reverse_lazy('news_list')
 
