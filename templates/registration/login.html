@@ -1,0 +1,12 @@
+{% extends 'default.html' %}
+
+{% block content %}
+<h1>Вход на сайт</h1>
+<form method="post" action="{% url 'login' %}">
+{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Войти">
+    <input type="hidden" name="next" value="{{ next }}">
+</form>
+
+{% endblock %}

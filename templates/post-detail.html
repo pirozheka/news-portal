@@ -10,4 +10,9 @@
     <h1>{{ post.post_title|censor }}</h1>
     <p>{{ time_now|date:'d.m.Y' }}</p>
     <p class="container">{{ post.post_text|censor }}</p>
+    <p>
+        <a href="/news{% url 'post_detail' post.id %}/edit/" class="text-success">Редактировать</a>
+        <span>|</span>
+        <a href="/news{% url 'post_detail' post.id %}/delete/" class="text-success">Удалить</a>
+    </p>
 {% endblock content %}

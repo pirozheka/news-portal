@@ -1,3 +1,5 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from datetime import datetime
@@ -84,7 +86,9 @@ class PostCreateForm(forms.ModelForm):
     ]
 
 
-class NewsCreate(CreateView):
+class NewsCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = ('news.add_post',)
+    raise_exception = True
     form_class = PostCreateForm
     model = Post
     template_name = 'post_create_news.html'
@@ -94,7 +98,9 @@ class NewsCreate(CreateView):
         post.post_type = 'NP'
         return super().form_valid(form)
     
-class ArticlesCreate(CreateView):
+class ArticlesCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = ('news.add_post',)
+    raise_exception = True
     form_class = PostCreateForm
     model = Post
     template_name = 'post_create_news.html'
@@ -104,12 +110,16 @@ class ArticlesCreate(CreateView):
         post.post_type = 'AR'
         return super().form_valid(form)
 
-class PostEdit(UpdateView):
+class PostEdit(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = ('news.change_post',)
+    raise_exception = True
     form_class = PostCreateForm
     model = Post
     template_name = 'post_edit.html'
 
-class PostDelete(DeleteView):
+class PostDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    permission_required = ('news.delete_post',)
+    raise_exception = True
     model = Post
     template_name = 'post_delete.html'
     success_url = reverse_lazy('news_list')
