@@ -1,15 +1,18 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from datetime import datetime
 from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView
 )
 from django import forms
-from .models import Post, Category, Author
+from .models import Post, Category, Author, Subscriber
 from .filters import NewsFilter
-from .forms import NewsSearchForm
+from .forms import NewsSearchForm, SubscriptionForm
+
 
 
 
@@ -82,7 +85,7 @@ class PostCreateForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = [
-        'author', 'post_title', 'post_text'
+        'author', 'post_title', 'post_text', 'category_names'
     ]
 
 
@@ -124,3 +127,21 @@ class PostDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     template_name = 'post_delete.html'
     success_url = reverse_lazy('news_list')
 
+@login_required
+def subscriptions(request):
+    if request.method == 'POST':
+        form = SubscriptionForm(request.POST)
+        if form.is_valid():
+            # Удаляем существующие подписки пользователя
+            Subscriber.objects.filter(user=request.user).delete()
+            # Добавляем новые подписки
+            for category in form.cleaned_data['categories']:
+                Subscriber.objects.get_or_create(user=request.user, category=category)
+            # Добавляем сообщение
+            messages.success(request, 'Подписки обновлены')
+            return redirect('subscriptions')
+    else:
+        # Получаем категории, на которые подписан пользователь
+        subscribed_categories = Subscriber.objects.filter(user=request.user).values_list('category', flat=True)
+        form = SubscriptionForm(initial={'categories': subscribed_categories})
+    return render(request, 'subscriptions.html', {'form': form})

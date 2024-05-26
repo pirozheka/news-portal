@@ -108,4 +108,15 @@ class Comment(models.Model):
         self.save()
 
         
-    
+class Subscriber(models.Model):
+    user = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='subscriber'
+    )
+
+    category = models.ForeignKey(
+        to='Category',
+        on_delete=models.CASCADE,
+        related_name='subscriber'
+    )
