@@ -13,6 +13,8 @@ from .models import Post, Category, Author, Subscriber
 from .filters import NewsFilter
 from .forms import NewsSearchForm, SubscriptionForm
 
+from newspaper.tasks import send_notification
+
 
 
 
@@ -99,7 +101,11 @@ class NewsCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     def form_valid(self, form):
         post = form.save(commit=False)
         post.post_type = 'NP'
+        post.save()
+        send_notification.apply_async([post.pk])
         return super().form_valid(form)
+    
+    
     
 class ArticlesCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = ('news.add_post',)
